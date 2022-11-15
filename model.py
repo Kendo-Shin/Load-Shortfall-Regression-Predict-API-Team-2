@@ -58,10 +58,19 @@ def _preprocess_data(data):
     # ---------------------------------------------------------------
 
     # ----------- Replace this code with your own preprocessing steps --------
-    predict_vector = feature_vector_df[['Madrid_wind_speed','Bilbao_rain_1h','Valencia_wind_speed']]
+    #predict_vector = feature_vector_df[['Madrid_wind_speed','Bilbao_rain_1h','Valencia_wind_speed']]
     # ------------------------------------------------------------------------
+    for column in feature_vector_df:
+        with_nulls = feature_vector_df[column].isna().sum()
+        if with_nulls > 0:
+            feature_vector_df = feature_vector_df.drop(column, axis = 1)
+        else:
+            if column not in feature_vector_df.select_dtypes(include = 'number').columns:
+                feature_vector_df = feature_vector_df.drop(column, axis = 1)
+    predict_vector = feature_vector_df
 
     return predict_vector
+    #return feature_vector_df
 
 def load_model(path_to_model:str):
     """Adapter function to load our pretrained model into memory.
